@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 namespace Entities;
 public abstract class BaseEntity
@@ -65,6 +66,10 @@ public class Person : BaseEntity
     // with object initialization syntax.
     public Person(string name) : this(name,new Coords()){}
     public Person(string name, Coords location) : base(location) => Name = name;
+
+    public Person(Coords location) : base(location)
+    {
+    }
 
     public string Name { get; set; }
 
@@ -136,4 +141,14 @@ public class Car : BaseEntity
     // Setup one-to-many with House
     private Guid? HouseId {get;set;}
     public House? Garage {get;set;}
+}
+
+public class Ghoul : Person
+{
+    public Ghoul(string name, bool FeralState) : this(name, FeralState, new Coords()){}
+
+    public Ghoul(string name, bool FeralState, Coords location) : base(location)
+    {
+        Name = name;
+    }
 }
