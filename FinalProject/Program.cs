@@ -35,18 +35,22 @@ using (World world = new())
     ];
 
     List<RadRoach> radRoaches = [
-        new RadRoach("Common",15, 5),
-        new RadRoach("Common",15, 5),
-        new RadRoach("Common",15, 5),
-        new RadRoach("Common",15, 5),
-        new RadRoach("Common",15, 5),
-        new RadRoach("Common",15, 5),
-        new RadRoach("Irradiated",15, 5)
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Common",15, 5, new Coords()),
+        new RadRoach("Irradiated",45, 15, new Coords())
     ];
 
     List<DeathClaw> deathClaws = [
-        new DeathClaw("Chameleon",200, 50),
-        new DeathClaw("Alpha",250, 75)
+        new DeathClaw("Chameleon",200, 50, new Coords()),
+        new DeathClaw("Alpha",250, 75, new Coords())
+    ];
+
+    List<Dog> dogs = [
+        new Dog("Dog Meat", 25, 15, new Coords())
     ];
 
     // Add entities to database:
@@ -57,6 +61,7 @@ using (World world = new())
     world.Ghouls.AddRange(ghouls);
     world.RadRoaches.AddRange(radRoaches);
     world.DeathClaws.AddRange(deathClaws);
+    world.Dogs.AddRange(dogs);
 
     /*
     You can also start tracking individual entities by calling world.People.Add()

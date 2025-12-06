@@ -179,7 +179,7 @@ public class Ghoul : Person
 
 public class RadRoach : LivingThing, iAttack
 {
-    public RadRoach(string Type, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat){}
+    public RadRoach(string Type, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
 
     public void Attack(LivingThing target)
     {
@@ -190,11 +190,30 @@ public class RadRoach : LivingThing, iAttack
 
 public class DeathClaw : LivingThing, iAttack
 {
-    public DeathClaw(string Species, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat){}
+    public DeathClaw(string Species, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
 
     public void Attack(LivingThing target)
     {
         int TargetAdjustedHealth = target.HealthPoints - DMGStat;
+        throw new NotImplementedException();
+    }
+}
+
+public class Dog : LivingThing, iConverse, iAttack
+{
+    public Dog(string name, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
+
+    public string VoiceLine { get; set; }
+
+    public void Attack(LivingThing target)
+    {
+        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
+        throw new NotImplementedException();
+    }
+
+    public void Converse()
+    {
+        Console.WriteLine(VoiceLine);
         throw new NotImplementedException();
     }
 }

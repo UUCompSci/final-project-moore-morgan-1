@@ -9,6 +9,7 @@ public class World : DbContext
     public DbSet<Ghoul> Ghouls{get;set;}
     public DbSet<RadRoach> RadRoaches{get; set;}
     public DbSet<DeathClaw> DeathClaws{get;set;}
+    public DbSet<Dog> Dogs{get;set;}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
