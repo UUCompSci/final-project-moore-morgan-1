@@ -11,10 +11,10 @@ using (World world = new())
 
     // Create some entities
     List<Person> people = [
-        new Person("Bob",new Coords()),
-        new Person("Sue",new Coords()),
-        new Person("Sally",new Coords()),
-        new Person("Jimmy",new Coords(1,1))
+        new Person("Bob",new Coords(), 40, 15),
+        new Person("Sue",new Coords(), 35, 20),
+        new Person("Sally",new Coords(), 25, 5),
+        new Person("Jimmy",new Coords(1,1), 50, 20)
     ];
 
     List<Car> cars = [
@@ -28,11 +28,18 @@ using (World world = new())
         new House("456 Madison Ave.") {Location = new Coords(1,1)}
     ];
 
+    List<Ghoul> ghouls = [
+        new Ghoul("Hancock", false, new Coords(), 75, 25),
+        new Ghoul("Raul", false, new Coords(), 75, 25),
+        new Ghoul("Mr. Sumner", true, new Coords(), 100, 30)
+    ];
+
     // Add entities to database:
     // NOTE: This doesn't actually store them, EF Core starts tracking them
     world.People.AddRange(people);
     world.Cars.AddRange(cars);
     world.Houses.AddRange(houses);
+    world.Ghouls.AddRange(ghouls);
 
     /*
     You can also start tracking individual entities by calling world.People.Add()

@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using System.Dynamic;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace Entities;
 public abstract class BaseEntity
@@ -24,6 +26,17 @@ public abstract class BaseEntity
     // Define default and custom constructors
     public BaseEntity(){}
     public BaseEntity(Coords location) => Location = location;
+}
+
+//To give animals and people hitpoitns and make them targets for iAttack
+public abstract class LivingThing : BaseEntity
+{
+    public LivingThing(int HealthPoints, int DMGStat) : this(HealthPoints,DMGStat, new Coords()){}
+    public LivingThing(int HealthPoints,int DMGStat, Coords Location) : base(Location){}
+    public LivingThing(Coords Location) : base(Location){}
+
+    public int HealthPoints { get; set; }
+    public int DMGStat {get; set;}
 }
 
 // Declared as an owned entity type: https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities
@@ -54,8 +67,9 @@ public class Coords
 // You can read more about configuring relationships between entities here:
 // https://learn.microsoft.com/en-us/ef/core/modeling/relationships
 
-public class Person : BaseEntity
+public class Person : LivingThing, iConverse, iAttack
 {
+    private Coords coords;
 
     // Define constructor
     // Note, to use constructor, you must follow naming conventions
@@ -64,15 +78,12 @@ public class Person : BaseEntity
     // Note: you can only map constructor parameters to simple types
     // Coord type Location cannot be mapped so it will have to be set
     // with object initialization syntax.
-    public Person(string name) : this(name,new Coords()){}
-    public Person(string name, Coords location) : base(location) => Name = name;
-
-    public Person(Coords location) : base(location)
+    public Person(string name, Coords Location, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat, Location)
     {
+        Name = name;
     }
 
     public string Name { get; set; }
-
     // Define One-to-Many relationship between Person and House
     // There are lots of ways to set this up. We will use private
     // foreign keys since they are only important for the database,
@@ -89,8 +100,18 @@ public class Person : BaseEntity
     // Setup many-to-many relationship between Person and Car. You can read more here:
     // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
     public List<Car> Cars {get;set;} = new();
+    public string VoiceLine { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int DMG { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+    public void Converse()
+    {
+        throw new NotImplementedException();
+    }
 
+    public void Attack(LivingThing target)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public class House : BaseEntity
@@ -145,9 +166,9 @@ public class Car : BaseEntity
 
 public class Ghoul : Person
 {
-    public Ghoul(string name, bool FeralState) : this(name, FeralState, new Coords()){}
+    public Ghoul(string name, bool FeralState, int HealthPoints, int DMGStat) : this(name, FeralState, new Coords(), HealthPoints, DMGStat){}
 
-    public Ghoul(string name, bool FeralState, Coords location) : base(location)
+    public Ghoul(string name, bool FeralState, Coords location, int HealthPoints, int DMGStat) : base(name, location, HealthPoints, DMGStat)
     {
         Name = name;
     }
