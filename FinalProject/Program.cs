@@ -34,12 +34,29 @@ using (World world = new())
         new Ghoul("Mr. Sumner", true, new Coords(), 100, 30)
     ];
 
+    List<RadRoach> radRoaches = [
+        new RadRoach("Common",15, 5),
+        new RadRoach("Common",15, 5),
+        new RadRoach("Common",15, 5),
+        new RadRoach("Common",15, 5),
+        new RadRoach("Common",15, 5),
+        new RadRoach("Common",15, 5),
+        new RadRoach("Irradiated",15, 5)
+    ];
+
+    List<DeathClaw> deathClaws = [
+        new DeathClaw("Chameleon",200, 50),
+        new DeathClaw("Alpha",250, 75)
+    ];
+
     // Add entities to database:
     // NOTE: This doesn't actually store them, EF Core starts tracking them
     world.People.AddRange(people);
     world.Cars.AddRange(cars);
     world.Houses.AddRange(houses);
     world.Ghouls.AddRange(ghouls);
+    world.RadRoaches.AddRange(radRoaches);
+    world.DeathClaws.AddRange(deathClaws);
 
     /*
     You can also start tracking individual entities by calling world.People.Add()

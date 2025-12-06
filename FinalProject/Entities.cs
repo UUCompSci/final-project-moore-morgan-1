@@ -100,16 +100,18 @@ public class Person : LivingThing, iConverse, iAttack
     // Setup many-to-many relationship between Person and Car. You can read more here:
     // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
     public List<Car> Cars {get;set;} = new();
-    public string VoiceLine { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public int DMG { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public string VoiceLine {get; set;}
+
 
     public void Converse()
     {
+        Console.WriteLine(VoiceLine);
         throw new NotImplementedException();
     }
 
     public void Attack(LivingThing target)
     {
+        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
         throw new NotImplementedException();
     }
 }
@@ -171,5 +173,28 @@ public class Ghoul : Person
     public Ghoul(string name, bool FeralState, Coords location, int HealthPoints, int DMGStat) : base(name, location, HealthPoints, DMGStat)
     {
         Name = name;
+    }
+
+}
+
+public class RadRoach : LivingThing, iAttack
+{
+    public RadRoach(string Type, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat){}
+
+    public void Attack(LivingThing target)
+    {
+        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
+        throw new NotImplementedException();
+    }
+}
+
+public class DeathClaw : LivingThing, iAttack
+{
+    public DeathClaw(string Species, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat){}
+
+    public void Attack(LivingThing target)
+    {
+        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
+        throw new NotImplementedException();
     }
 }
