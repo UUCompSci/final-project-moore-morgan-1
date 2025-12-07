@@ -29,14 +29,24 @@ public abstract class BaseEntity
 }
 
 //To give animals and people hitpoitns and make them targets for iAttack
-public abstract class LivingThing : BaseEntity
+public abstract class LivingThing : BaseEntity, iMove
 {
+    public LivingThing() : base(){}
     public LivingThing(int HealthPoints, int DMGStat) : this(HealthPoints,DMGStat, new Coords()){}
-    public LivingThing(int HealthPoints,int DMGStat, Coords Location) : base(Location){}
+    public LivingThing(int HealthPoints,int DMGStat, Coords Location) : base(Location)
+    {
+        this.HealthPoints = HealthPoints;
+        this.DMGStat = DMGStat;
+    }
     public LivingThing(Coords Location) : base(Location){}
 
     public int HealthPoints { get; set; }
     public int DMGStat {get; set;}
+
+    public void Move(Coords NextLocation)
+    {
+        Location = NextLocation;
+    }
 }
 
 // Declared as an owned entity type: https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities
@@ -69,7 +79,7 @@ public class Coords
 
 public class Person : LivingThing, iConverse, iAttack
 {
-    private Coords coords;
+    public Person() : base(){}
 
     // Define constructor
     // Note, to use constructor, you must follow naming conventions
@@ -100,7 +110,7 @@ public class Person : LivingThing, iConverse, iAttack
     // Setup many-to-many relationship between Person and Car. You can read more here:
     // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
     public List<Car> Cars {get;set;} = new();
-    public string VoiceLine {get; set;}
+    public string? VoiceLine {get; set;}
 
 
     public void Converse()
@@ -168,18 +178,28 @@ public class Car : BaseEntity
 
 public class Ghoul : Person
 {
-    public Ghoul(string name, bool FeralState, int HealthPoints, int DMGStat) : this(name, FeralState, new Coords(), HealthPoints, DMGStat){}
+    public Ghoul() : base(){}
+    public bool FeralState {get; set;}
+    public Ghoul(string name, bool FeralState, int HealthPoints, int DMGStat) : this(name, FeralState, new Coords(), HealthPoints, DMGStat)
+    {
+    }
 
     public Ghoul(string name, bool FeralState, Coords location, int HealthPoints, int DMGStat) : base(name, location, HealthPoints, DMGStat)
     {
         Name = name;
+        this.FeralState = FeralState;
     }
 
 }
 
 public class RadRoach : LivingThing, iAttack
 {
-    public RadRoach(string Type, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
+    public RadRoach() : base(){}
+    public string Type {get; set;}
+    public RadRoach(string Type, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location)
+    {
+        this.Type = Type;
+    }
 
     public void Attack(LivingThing target)
     {
@@ -190,7 +210,12 @@ public class RadRoach : LivingThing, iAttack
 
 public class DeathClaw : LivingThing, iAttack
 {
-    public DeathClaw(string Species, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
+    public DeathClaw() : base(){}
+    public string Species {get; set;}
+    public DeathClaw(string Species, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location)
+    {
+        this.Species = Species;
+    }
 
     public void Attack(LivingThing target)
     {
@@ -201,9 +226,14 @@ public class DeathClaw : LivingThing, iAttack
 
 public class Dog : LivingThing, iConverse, iAttack
 {
-    public Dog(string name, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location){}
+    public Dog() : base(){}
+    public string Name {get; set;}
+    public Dog(string name, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location)
+    {
+        Name = name;
+    }
 
-    public string VoiceLine { get; set; }
+    public string? VoiceLine { get; set; }
 
     public void Attack(LivingThing target)
     {
@@ -214,6 +244,24 @@ public class Dog : LivingThing, iConverse, iAttack
     public void Converse()
     {
         Console.WriteLine(VoiceLine);
+        throw new NotImplementedException();
+    }
+}
+
+public class Weapon : BaseEntity, iEquipable
+{
+    public string Type {get; set;}
+    public int StatIncrease {get; set;}
+    public Weapon() : base(){}
+    public Weapon(string Type, int StatIncrease, Coords Location) : base(Location)
+    {
+        this.Type = Type;
+        this.StatIncrease = StatIncrease;
+    }
+
+    public void Equip(LivingThing target)
+    {
+        int targetAdjustedDMG = target.DMGStat + StatIncrease;
         throw new NotImplementedException();
     }
 }

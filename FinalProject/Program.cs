@@ -16,7 +16,7 @@ using (World world = new())
         new Person("Sally",new Coords(), 25, 5),
         new Person("Jimmy",new Coords(1,1), 50, 20)
     ];
-
+    Console.WriteLine($"Created {people.Count} people");
     List<Car> cars = [
         new Car("Ford","Focus") {Location = new Coords()},
         new Car("Toyota","Camry") {Location = new Coords()},
@@ -56,6 +56,7 @@ using (World world = new())
     // Add entities to database:
     // NOTE: This doesn't actually store them, EF Core starts tracking them
     world.People.AddRange(people);
+    Console.WriteLine($"Added {people.Count} people to context");
     world.Cars.AddRange(cars);
     world.Houses.AddRange(houses);
     world.Ghouls.AddRange(ghouls);
@@ -70,7 +71,10 @@ using (World world = new())
     */
 
     // Save the entities to the database:
-    world.SaveChanges();
+    Console.WriteLine("About to save changes...");
+    int saved = world.SaveChanges();
+    Console.WriteLine($"SaveChanges returned: {saved} entities saved");
+
 
     // Now let's query the database
     Person bob = world.People.Where(p => p.Name=="Bob").Single();

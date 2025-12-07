@@ -19,4 +19,13 @@ public class World : DbContext
         Console.WriteLine($"Connection: {connection}");
         optionsBuilder.UseSqlite(connection);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Ghoul>();
+        modelBuilder.Entity<RadRoach>();
+        modelBuilder.Entity<DeathClaw>();
+        modelBuilder.Entity<Dog>();
+        modelBuilder.Entity<Weapon>();
+    }
 }
