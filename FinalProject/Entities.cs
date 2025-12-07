@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using static System.Console;
 using System.Dynamic;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -103,21 +104,18 @@ public class Person : LivingThing, iConverse, iAttack
     
     // Define private optional foreign key
     // Name is important for EF Core to automatically set foreign key (can be configured manually instead)
-    private Guid? HouseId {get; set;} // Setting nullable type defines relationship as optional.
-    // Define public reference navigation, again must be nullable for relationship to be optional.
-    public House? Home {get;set;}
-
-    // Setup many-to-many relationship between Person and Car. You can read more here:
-    // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
-    public List<Car> Cars {get;set;} = new();
+  
     public string? VoiceLine {get; set;}
 
 
     public void Converse()
     {
-        Console.WriteLine(VoiceLine);
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(VoiceLine))
+            WriteLine($"{Name} has nothing to say.");
+        else
+            WriteLine($"{Name} says: {VoiceLine}");
     }
+
 
     public void Attack(LivingThing target)
     {
@@ -126,55 +124,7 @@ public class Person : LivingThing, iConverse, iAttack
     }
 }
 
-public class House : BaseEntity
-{
-    public House(string address) : base() => Address = address;
-    public string Address {get;set;}
 
-    // Setup one-to-many relationship with person
-    public List<Person> Residents {get;set;} = new();
-
-    // Setup one-to-many with car, using backing field to 
-    // ensure no more than 2 cars garaged at house
-    // Learn more about backing fields and EF Core here:
-    // https://learn.microsoft.com/en-us/ef/core/modeling/backing-field
-    private List<Car> _garage = [];
-    public List<Car> Garage // NOTE: Setter logic can be bypassed with Garage.Add(). I'm trying to keep the code simple, 
-    {                       // but you could use IReadOnlyList<Car> and use class methods to check number of cars.  
-        get => _garage;     
-        set
-        {
-            if (value.Count > 2)
-            {
-                Console.WriteLine("Garage can only hold 2");
-                return;
-            }
-            else
-            {
-                _garage = value;
-            }
-        }
-    } 
-
-}
-
-public class Car : BaseEntity
-{
-    public Car(string make,string model) : base()
-    {
-        Make = make;
-        Model = model;
-    }
-    public string Make {get;set;}
-    public string Model {get;set;}
-
-    // Many-to-many with Person
-    public List<Person> Passengers {get;set;} = new();
-
-    // Setup one-to-many with House
-    private Guid? HouseId {get;set;}
-    public House? Garage {get;set;}
-}
 
 public class Ghoul : Person
 {
@@ -189,22 +139,46 @@ public class Ghoul : Person
         Name = name;
         this.FeralState = FeralState;
     }
+    public new void Attack(LivingThing target)
+{
+    int dmg = FeralState ? DMGStat * 2 : DMGStat;
+
+    target.HealthPoints -= dmg;
+
+    if (target.HealthPoints <= 0)
+        WriteLine($"{target.GetType().Name} has died!");
+    else
+        WriteLine($"{target.GetType().Name} now has {target.HealthPoints} HP remaining.");
+}
+
 
 }
 
 public class RadRoach : LivingThing, iAttack
 {
+    public void Attack(LivingThing target)
+{
+    if (target.HealthPoints <= 0)
+    {
+        WriteLine($"{this.GetType().Name} tries to attack {target.GetType().Name}, but they are already dead.");
+        return;
+    }
+
+    target.HealthPoints -= DMGStat;
+
+    WriteLine($"{this.GetType().Name} attacks {target.GetType().Name} for {DMGStat} damage!");
+
+    if (target.HealthPoints <= 0)
+        WriteLine($"{target.GetType().Name} has died!");
+    else
+        WriteLine($"{target.GetType().Name} now has {target.HealthPoints} HP remaining.");
+}
+
     public RadRoach() : base(){}
     public string Type {get; set;}
     public RadRoach(string Type, int HealthPoints, int DMGStat, Coords Location) : base(HealthPoints, DMGStat, Location)
     {
         this.Type = Type;
-    }
-
-    public void Attack(LivingThing target)
-    {
-        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
-        throw new NotImplementedException();
     }
 }
 
@@ -219,9 +193,22 @@ public class DeathClaw : LivingThing, iAttack
 
     public void Attack(LivingThing target)
     {
-        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
-        throw new NotImplementedException();
+        if (target.HealthPoints <= 0)
+        {
+            WriteLine($"{this.GetType().Name} tries to attack {target.GetType().Name}, but they are already dead.");
+            return;
+        }
+
+        target.HealthPoints -= DMGStat;
+
+        WriteLine($"{this.GetType().Name} attacks {target.GetType().Name} for {DMGStat} damage!");
+
+        if (target.HealthPoints <= 0)
+            WriteLine($"{target.GetType().Name} has died!");
+        else
+            WriteLine($"{target.GetType().Name} now has {target.HealthPoints} HP remaining.");
     }
+
 }
 
 public class Dog : LivingThing, iConverse, iAttack
@@ -237,15 +224,31 @@ public class Dog : LivingThing, iConverse, iAttack
 
     public void Attack(LivingThing target)
     {
-        int TargetAdjustedHealth = target.HealthPoints - DMGStat;
-        throw new NotImplementedException();
+        if (target.HealthPoints <= 0)
+        {
+            WriteLine($"{this.GetType().Name} tries to attack {target.GetType().Name}, but they are already dead.");
+            return;
+        }
+
+        target.HealthPoints -= DMGStat;
+
+        WriteLine($"{this.GetType().Name} attacks {target.GetType().Name} for {DMGStat} damage!");
+
+        if (target.HealthPoints <= 0)
+            WriteLine($"{target.GetType().Name} has died!");
+        else
+            WriteLine($"{target.GetType().Name} now has {target.HealthPoints} HP remaining.");
     }
+
 
     public void Converse()
     {
-        Console.WriteLine(VoiceLine);
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(VoiceLine))
+            WriteLine($"{Name} barks happily.");
+        else
+            WriteLine($"{Name} says: {VoiceLine}");
     }
+
 }
 
 public class Weapon : BaseEntity, iEquipable
@@ -260,8 +263,12 @@ public class Weapon : BaseEntity, iEquipable
     }
 
     public void Equip(LivingThing target)
-    {
-        int targetAdjustedDMG = target.DMGStat + StatIncrease;
-        throw new NotImplementedException();
-    }
+{
+    target.DMGStat += StatIncrease;
+
+    WriteLine($"{target.GetType().Name} equipped {Type}!");
+    WriteLine($"{target.GetType().Name}'s damage increased by {StatIncrease}.");
+    WriteLine($"New DMG stat: {target.DMGStat}");
+}
+
 }

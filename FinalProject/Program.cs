@@ -5,28 +5,18 @@ using Entities;
 using (World world = new())
 {
     bool deleted = world.Database.EnsureDeleted();
-    Console.WriteLine($"Database deleted: {deleted}");
+    WriteLine($"Database deleted: {deleted}");
     bool created = world.Database.EnsureCreated();
-    Console.WriteLine($"Database created: {created}");
+    WriteLine($"Database created: {created}");
 
     // Create some entities
-    List<Person> people = [
+    List<Person> people = [ ///change later
         new Person("Bob",new Coords(), 40, 15),
         new Person("Sue",new Coords(), 35, 20),
         new Person("Sally",new Coords(), 25, 5),
         new Person("Jimmy",new Coords(1,1), 50, 20)
     ];
-    Console.WriteLine($"Created {people.Count} people");
-    List<Car> cars = [
-        new Car("Ford","Focus") {Location = new Coords()},
-        new Car("Toyota","Camry") {Location = new Coords()},
-        new Car("Ford","Mustang") {Location = new Coords(1,1)}
-    ];
-
-    List<House> houses = [
-        new House("123 Union University Dr.") {Location = new Coords()},
-        new House("456 Madison Ave.") {Location = new Coords(1,1)}
-    ];
+    WriteLine($"Created {people.Count} people");
 
     List<Ghoul> ghouls = [
         new Ghoul("Hancock", false, new Coords(), 75, 25),
@@ -56,9 +46,6 @@ using (World world = new())
     // Add entities to database:
     // NOTE: This doesn't actually store them, EF Core starts tracking them
     world.People.AddRange(people);
-    Console.WriteLine($"Added {people.Count} people to context");
-    world.Cars.AddRange(cars);
-    world.Houses.AddRange(houses);
     world.Ghouls.AddRange(ghouls);
     world.RadRoaches.AddRange(radRoaches);
     world.DeathClaws.AddRange(deathClaws);
@@ -71,25 +58,28 @@ using (World world = new())
     */
 
     // Save the entities to the database:
-    Console.WriteLine("About to save changes...");
     int saved = world.SaveChanges();
-    Console.WriteLine($"SaveChanges returned: {saved} entities saved");
+    WriteLine($"SaveChanges returned: {saved} entities saved");
 
 
     // Now let's query the database
-    Person bob = world.People.Where(p => p.Name=="Bob").Single();
+    Person bob = world.People.Single(p => p.Name=="Bob");
     Person sue = world.People.Single(p => p.Name=="Sue");
-    House UUHouse = world.Houses.Single(h => h.Address=="123 Union University Dr.");
-    List<Car> fords = world.Cars.Where(c=>c.Make=="Ford").ToList();
+    Ghoul normalGhoul = world.Ghouls.Single(g => g.Name == "Hancock");
+    Dog dogmeat = world.Dogs.Single(d => d.Name == "Dog Meat");
+    RadRoach roach = world.RadRoaches.First();
+    DeathClaw alpha = world.DeathClaws.Single(d => d.Species == "Alpha");
 
-    UUHouse.Residents = [bob,sue];
-    UUHouse.Garage = fords;
-    foreach (Car c in fords)
-    {
-        c.Passengers = [bob,sue];
-    }
-    bob.Cars = fords;
-    sue.Cars = [fords[0]];
+    dogmeat.Converse();
+    dogmeat.Attack(roach);
+
+    Weapon gun=new Weapon ("10mm gun", 10, new Coords());
+    WriteLine("Hancock found a 10mm gun!");
+    gun.Equip(normalGhoul);
+
+    WriteLine("Hancock attacks dogmeat with a gun!");
+    normalGhoul.Attack(dogmeat);
+
     world.SaveChanges();
-
+   
 }

@@ -4,8 +4,6 @@ using Entities;
 public class World : DbContext
 {
     public DbSet<Person> People {get;set;}
-    public DbSet<House> Houses{get;set;}
-    public DbSet<Car> Cars{get;set;}
     public DbSet<Ghoul> Ghouls{get;set;}
     public DbSet<RadRoach> RadRoaches{get; set;}
     public DbSet<DeathClaw> DeathClaws{get;set;}
