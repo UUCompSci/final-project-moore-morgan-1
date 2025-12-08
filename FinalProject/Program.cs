@@ -63,15 +63,62 @@ using (World world = new())
     RadRoach roach = world.RadRoaches.First();
     DeathClaw alpha = world.DeathClaws.Single(d => d.Species == "Alpha");
 
-    dogmeat.Converse();
-    dogmeat.Attack(roach);
+    //Selection keys
+    const ConsoleKey Z = ConsoleKey.Z;
+    const ConsoleKey X = ConsoleKey.X;
+    const ConsoleKey C = ConsoleKey.C;
+    const ConsoleKey V = ConsoleKey.V;
+    const ConsoleKey B = ConsoleKey.B;
 
-    Weapon gun=new Weapon ("10mm gun", 10, new Coords());
-    WriteLine("Hancock found a 10mm gun!");
-    gun.Equip(normalGhoul);
 
-    WriteLine("Hancock attacks dogmeat with a gun!");
-    normalGhoul.Attack(dogmeat);
+    bool playing=true;
+    while (playing)
+    {
+        WriteLine("Move Nate(Z)");
+        WriteLine("Make Dogmeat to speak(X)");
+        WriteLine("Hancock attacks Dogmeat (C)");
+        WriteLine("Give Hancock a gun (V)");
+        WriteLine("Exit (B)");
+        WriteLine("Choose an action: ");
+
+        ConsoleKey choice = ReadKey(true).Key;
+        
+        switch (choice)
+        {
+            case Z:
+                nate.Move(new Coords(nate.Location.X + 1, nate.Location.Y + 1));
+                WriteLine($"Nate moved to {nate.Location}");
+                break;
+
+            case X:
+                dogmeat.Converse();
+                break;
+
+            case C:
+                WriteLine("Hancock attacks Dogmeat:");
+                normalGhoul.Attack(dogmeat);
+                break;
+
+            case V:
+                {
+                    Weapon w = new Weapon("10 mm gun", 5, new Coords());
+                    WriteLine("Hancock found a 10 mm gun!");
+                    w.Equip(normalGhoul);
+                }
+                break;
+
+            case B:
+                WriteLine("Exiting the game!");
+                playing = false;
+                break;
+
+            default:
+                WriteLine("Invalid command.");
+                break;
+        }
+        WriteLine("Press a key to continue");
+        ReadKey(true);
+    }
 
     world.SaveChanges();
    
