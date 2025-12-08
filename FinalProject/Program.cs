@@ -76,7 +76,7 @@ using (World world = new())
     {
         WriteLine("Choose an action: ");
         WriteLine("Move Nate(Z)");
-        WriteLine("Make Dogmeat to speak(X)");
+        WriteLine("Make Dogmeat speak(X)");
         WriteLine("Hancock attacks Dogmeat (C)");
         WriteLine("Give Hancock a gun (V)");
         WriteLine("Exit (B)");
