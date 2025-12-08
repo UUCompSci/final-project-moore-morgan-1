@@ -11,10 +11,10 @@ using (World world = new())
 
     // Create some entities
     List<Person> people = [ ///change later
-        new Person("Bob",new Coords(), 40, 15),
-        new Person("Sue",new Coords(), 35, 20),
-        new Person("Sally",new Coords(), 25, 5),
-        new Person("Jimmy",new Coords(1,1), 50, 20)
+        new Person("Nora",new Coords(), 40, 15),
+        new Person("Piper",new Coords(), 35, 20),
+        new Person("Mayor McDonough",new Coords(), 25, 5),
+        new Person("Nate",new Coords(1,1), 50, 20)
     ];
     WriteLine($"Created {people.Count} people");
 
