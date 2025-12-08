@@ -20,5 +20,6 @@ interface iMove
 
 interface iEquipable
 {
-    void Equip(LivingThing target);
+    //Makes it where only people, and subsequently ghouls, can equip items.
+    void Equip(Person target);
 }

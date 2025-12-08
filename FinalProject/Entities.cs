@@ -6,25 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Entities;
 public abstract class BaseEntity
 {
-    /* Use a unique Guid as the Id. EF Core will automatically set
-       Id as the primary field by convention (based on the variable name).
-       If you want to name it something different, you have to decorate with 
-       [Key] from System.ComponentModel.DataAnnotations namespace.
-       
-       The private set prevents the program from being able to modify the
-       Id property, but allows EF Core to add it to the model without 
-       explicitly adding it with Fluent API (get only properties are
-       ignored by EF Core by convention).
-
-       We initialize it with a new Guid object (which will be a unique
-       128-bit integer represented as a 32-digit hexadecimal string).
-       It will be saved as a text string in the database.
-    */
+    //Gives each entity a unique ID
     public Guid Id { get; private set;} = Guid.NewGuid();
-    // Use Coords struct (defined below) to save Location
     public Coords Location {get; set;}
-
-    // Define default and custom constructors
     public BaseEntity(){}
     public BaseEntity(Coords location) => Location = location;
 }
@@ -50,66 +34,33 @@ public abstract class LivingThing : BaseEntity, iMove
     }
 }
 
-// Declared as an owned entity type: https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities
 [Owned]
 public class Coords
 {
-    // Define X and Y
     public double X {get;set;}
     public double Y {get;set;}
-    // Default constructor will set X=0 and Y=0
     public Coords(){}
-    // Custom constructor sets X and Y.  
     public Coords(double x,double y) {X = x; Y = y;}
-    // Override ToString() method
     public override string ToString() => $"({X:N2}, {Y:N2})";
 }
-
-// We will set up some relationships between classes for Person,
-// House, and Car classes.
-
-// We will define optional One-to-Many relationships between Person and House 
-// (one house can hold multiple people) and Car and House (since a house can 
-// have multiple cars parked at it).
-
-// We will define an optional Many-to-Many relationship between Person and Car
-// since a car can have multiple drivers, and a person can own multiple car.
-
-// You can read more about configuring relationships between entities here:
-// https://learn.microsoft.com/en-us/ef/core/modeling/relationships
 
 public class Person : LivingThing, iConverse, iAttack
 {
     public Person() : base(){}
-
-    // Define constructor
-    // Note, to use constructor, you must follow naming conventions
-    // for parameter and properties. (There's currently no way to 
-    // explicitly map constructor parameters to database properties.)
-    // Note: you can only map constructor parameters to simple types
-    // Coord type Location cannot be mapped so it will have to be set
-    // with object initialization syntax.
     public Person(string name, Coords Location, int HealthPoints, int DMGStat) : base(HealthPoints, DMGStat, Location)
     {
         Name = name;
     }
 
     public string Name { get; set; }
-    // Define One-to-Many relationship between Person and House
-    // There are lots of ways to set this up. We will use private
-    // foreign keys since they are only important for the database,
-    // not our program. You can read more about setting up One-to-Many
-    // relationships here: 
-    // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/one-to-many#optional-one-to-many
-    
-    // Define private optional foreign key
-    // Name is important for EF Core to automatically set foreign key (can be configured manually instead)
   
+    //allows the voiceline to be set in the constructor. The ? allows the field to be null.
     public string? VoiceLine {get; set;}
 
 
     public void Converse()
     {
+        //set default "voiceline" if left empty
         if (string.IsNullOrWhiteSpace(VoiceLine))
             WriteLine($"{Name} has nothing to say.");
         else
@@ -125,7 +76,7 @@ public class Person : LivingThing, iConverse, iAttack
 }
 
 
-
+// A type of creature that was once human in the game which is why it inherits from person.
 public class Ghoul : Person
 {
     public Ghoul() : base(){}
@@ -141,10 +92,12 @@ public class Ghoul : Person
     }
     public new void Attack(LivingThing target)
 {
+    // if the ghoul is feral then it deals double damage
     int dmg = FeralState ? DMGStat * 2 : DMGStat;
 
     target.HealthPoints -= dmg;
 
+    //Messages meant for combat
     if (target.HealthPoints <= 0)
         WriteLine($"{target.GetType().Name} has died!");
     else
@@ -154,6 +107,7 @@ public class Ghoul : Person
 
 }
 
+//Giant bug which is a staple of the franchise
 public class RadRoach : LivingThing, iAttack
 {
     public void Attack(LivingThing target)
@@ -182,6 +136,7 @@ public class RadRoach : LivingThing, iAttack
     }
 }
 
+//Genetically modified lizards from fallout
 public class DeathClaw : LivingThing, iAttack
 {
     public DeathClaw() : base(){}
@@ -211,6 +166,7 @@ public class DeathClaw : LivingThing, iAttack
 
 }
 
+// Inherits from iConverse just so it can bark.
 public class Dog : LivingThing, iConverse, iAttack
 {
     public Dog() : base(){}
@@ -251,6 +207,7 @@ public class Dog : LivingThing, iConverse, iAttack
 
 }
 
+// Made simply because we wanted to know if we could
 public class Weapon : BaseEntity, iEquipable
 {
     public string Type {get; set;}
@@ -262,7 +219,7 @@ public class Weapon : BaseEntity, iEquipable
         this.StatIncrease = StatIncrease;
     }
 
-    public void Equip(LivingThing target)
+    public void Equip(Person target)
 {
     target.DMGStat += StatIncrease;
 

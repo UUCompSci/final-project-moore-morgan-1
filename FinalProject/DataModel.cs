@@ -3,6 +3,7 @@ using Entities;
 
 public class World : DbContext
 {
+    //Creates the tables?
     public DbSet<Person> People {get;set;}
     public DbSet<Ghoul> Ghouls{get;set;}
     public DbSet<RadRoach> RadRoaches{get; set;}

@@ -9,8 +9,8 @@ using (World world = new())
     bool created = world.Database.EnsureCreated();
     WriteLine($"Database created: {created}");
 
-    // Create some entities
-    List<Person> people = [ ///change later
+    // Creates some entities for use
+    List<Person> people = [ 
         new Person("Nora",new Coords(), 40, 15),
         new Person("Piper",new Coords(), 35, 20),
         new Person("Mayor McDonough",new Coords(), 25, 5),
@@ -43,28 +43,21 @@ using (World world = new())
         new Dog("Dog Meat", 25, 15, new Coords())
     ];
 
-    // Add entities to database:
-    // NOTE: This doesn't actually store them, EF Core starts tracking them
+    // Adds stuff to the database:
     world.People.AddRange(people);
     world.Ghouls.AddRange(ghouls);
     world.RadRoaches.AddRange(radRoaches);
     world.DeathClaws.AddRange(deathClaws);
     world.Dogs.AddRange(dogs);
 
-    /*
-    You can also start tracking individual entities by calling world.People.Add()
-    Also, you can add entities to multiple DbSets by calling world.Add() and
-    world.AddRange().
-    */
-
-    // Save the entities to the database:
+    // Saves everything to the database
     int saved = world.SaveChanges();
     WriteLine($"SaveChanges returned: {saved} entities saved");
 
 
-    // Now let's query the database
-    Person bob = world.People.Single(p => p.Name=="Bob");
-    Person sue = world.People.Single(p => p.Name=="Sue");
+    // Requests the data from the database so we can use it
+    Person nate = world.People.Single(p => p.Name=="Nate");
+    Person nora = world.People.Single(p => p.Name=="Nora");
     Ghoul normalGhoul = world.Ghouls.Single(g => g.Name == "Hancock");
     Dog dogmeat = world.Dogs.Single(d => d.Name == "Dog Meat");
     RadRoach roach = world.RadRoaches.First();
