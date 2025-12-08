@@ -70,7 +70,7 @@ using (World world = new())
     const ConsoleKey V = ConsoleKey.V;
     const ConsoleKey B = ConsoleKey.B;
 
-
+    //Game Loop
     bool playing=true;
     while (playing)
     {
