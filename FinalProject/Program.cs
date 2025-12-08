@@ -74,12 +74,12 @@ using (World world = new())
     bool playing=true;
     while (playing)
     {
+        WriteLine("Choose an action: ");
         WriteLine("Move Nate(Z)");
         WriteLine("Make Dogmeat to speak(X)");
         WriteLine("Hancock attacks Dogmeat (C)");
         WriteLine("Give Hancock a gun (V)");
         WriteLine("Exit (B)");
-        WriteLine("Choose an action: ");
 
         ConsoleKey choice = ReadKey(true).Key;
         
@@ -116,7 +116,7 @@ using (World world = new())
                 WriteLine("Invalid command.");
                 break;
         }
-        WriteLine("Press a key to continue");
+        WriteLine("Press enter to continue");
         ReadKey(true);
     }
 
